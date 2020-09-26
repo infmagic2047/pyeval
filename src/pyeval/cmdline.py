@@ -1,8 +1,10 @@
 import click
 
+from .user_shell import UserShell
+
 
 @click.command()
 @click.argument("expr")
 def main(expr):
-    # TODO: better isolation
-    print(eval(expr, {}, {}))
+    user_shell = UserShell()
+    user_shell.execute_code(expr)
