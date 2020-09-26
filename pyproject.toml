@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "pyeval"
+version = "0.0.1"
+description = "Evaluate and print Python expressions"
+license = "MIT"
+authors = ["Yutao Yuan <infmagic2047reg@outlook.com>"]
+readme = "README.rst"
+repository = "https://github.com/infmagic2047/pyeval"
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Topic :: Utilities",
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.0"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
