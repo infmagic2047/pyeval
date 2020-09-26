@@ -1,10 +1,12 @@
 import ast
+import sys
 
 
 class UserShell:
-    def __init__(self):
+    def __init__(self, *, print_file=sys.stdout):
         self.user_globals = {}
         self.user_locals = {}
+        self._print_file = print_file
 
     def execute_code(self, code):
         mod = self._parse_code(code)
@@ -20,7 +22,7 @@ class UserShell:
             code = compile(node, "<input>", mode, dont_inherit=True)
             result = eval(code, self.user_globals, self.user_locals)
             if result is not None:
-                print(result)
+                print(result, file=self._print_file)
 
     def _parse_code(self, code):
         # TODO: handle exceptions
