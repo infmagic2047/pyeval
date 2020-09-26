@@ -16,6 +16,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
+click = "^7.1.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.0"
@@ -23,6 +24,9 @@ black = "^20.8b1"
 isort = "^5.5.3"
 flake8 = "^3.8.3"
 pre-commit = "^2.7.1"
+
+[tool.poetry.scripts]
+pyeval = "pyeval.cmdline:main"
 
 [tool.isort]
 multi_line_output = 3
