@@ -4,17 +4,24 @@ import traceback
 
 
 class UserShell:
-    def __init__(self, *, print_file=sys.stdout):
+    def __init__(self, *, print_file=sys.stdout, transformers=None):
         self.user_globals = {}
         self.user_locals = {}
         self._print_file = print_file
+        if transformers is None:
+            transformers = []
+        self._transformers = transformers
 
     def execute_code(self, code):
         try:
-            mod = self._parse_code(code)
+            mod = ast.parse(code, "<input>", "exec")
         except SyntaxError:
             traceback.print_exc(limit=0, file=self._print_file)
             return
+        mod = self._transform_ast(mod)
+        self._run_with_result_printing(mod)
+
+    def _run_with_result_printing(self, mod):
         for stmt in mod.body:
             if isinstance(stmt, ast.Expr):
                 # Compile as expression so we can get the result
@@ -32,6 +39,8 @@ class UserShell:
             if result is not None:
                 print(result, file=self._print_file)
 
-    def _parse_code(self, code):
-        mod = ast.parse(code, "<input>", "exec")
+    def _transform_ast(self, mod):
+        for tr in self._transformers:
+            mod = tr.apply(mod)
+        ast.fix_missing_locations(mod)
         return mod
