@@ -184,7 +184,7 @@ class AutoImportTransformer(ASTTransformer):
     def __init__(self, *, verbose=False):
         self._verbose = verbose
 
-    def apply(self, mod):
+    def apply(self, mod: ast.Module):
         undefined_references = _UndefinedNameAttributeFinder().visit(mod)
         names = sorted(
             name for name in undefined_references if not hasattr(builtins, name)
