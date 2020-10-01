@@ -35,3 +35,10 @@ repos:
         entry: poetry run flake8
         language: system
         types: [python]
+      - id: sync-version
+        name: Sync __version__ with package metadata
+        entry: ./scripts/sync-version.py
+        language: script
+        types: [file]
+        files: ^pyproject.toml|src/[^/]*/__init__.py$
+        pass_filenames: false
