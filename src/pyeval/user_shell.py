@@ -37,7 +37,7 @@ class UserShell:
                 traceback.print_exc(limit=-1, file=self._print_file)
                 return
             if result is not None:
-                print(result, file=self._print_file)
+                print(repr(result), file=self._print_file)
 
     def _transform_ast(self, mod):
         for tr in self._transformers:
