@@ -5,8 +5,7 @@ import traceback
 
 class UserShell:
     def __init__(self, *, print_file=sys.stdout, transformers=None):
-        self.user_globals = {}
-        self.user_locals = {}
+        self.user_ns = {}
         self._print_file = print_file
         if transformers is None:
             transformers = []
@@ -32,7 +31,7 @@ class UserShell:
                 mode = "exec"
             code = compile(node, "<input>", mode, dont_inherit=True)
             try:
-                result = eval(code, self.user_globals, self.user_locals)
+                result = eval(code, self.user_ns, self.user_ns)
             except BaseException:
                 traceback.print_exc(limit=-1, file=self._print_file)
                 return
