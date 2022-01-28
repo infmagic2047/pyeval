@@ -69,7 +69,8 @@ class BaseUndefinedNameFinder(ast.NodeVisitor):
         for value in node.args.defaults:
             self.visit(value)
         for value in node.args.kw_defaults:
-            self.visit(value)
+            if value is not None:
+                self.visit(value)
         for value in node.decorator_list:
             self.visit(value)
         self._visiting_annotations = True
