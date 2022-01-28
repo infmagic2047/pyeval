@@ -174,6 +174,21 @@ class BaseUndefinedNameFinder(ast.NodeVisitor):
             self._define_name(name)
         self.generic_visit(node)
 
+    def visit_MatchAs(self, node):
+        if node.name is not None:
+            self._define_name(node.name)
+        self.generic_visit(node)
+
+    def visit_MatchStar(self, node):
+        if node.name is not None:
+            self._define_name(node.name)
+        self.generic_visit(node)
+
+    def visit_MatchMapping(self, node):
+        if node.rest is not None:
+            self._define_name(node.rest)
+        self.generic_visit(node)
+
     def visit_Module(self, node):
         self._scopes = [_Scope()]
 
