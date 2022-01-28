@@ -25,7 +25,16 @@ class _Scope:
         return self._is_comprehension
 
 
-class _UndefinedNameAttributeFinder(ast.NodeVisitor):
+class BaseUndefinedNameFinder(ast.NodeVisitor):
+    """
+    Base class for undefined name finders.
+
+    This class traverses the AST and maintains a list of defined symbols
+    for each scope, but does not specify what constitutes a use of
+    symbol. Subclasses should call self._use_name() to mark a name as
+    used in the current scope.
+    """
+
     def __init__(self):
         self._scopes = None
         self._visiting_annotations = False
@@ -124,11 +133,6 @@ class _UndefinedNameAttributeFinder(ast.NodeVisitor):
             self._define_name(node.arg)
             self._generic_visit_excluding(node, ["annotation"])
 
-    def visit_Attribute(self, node):
-        if isinstance(node.value, ast.Name):
-            self._use_name(node.value.id)
-        self.generic_visit(node)
-
     def visit_Global(self, node):
         for name in node.names:
             self._define_name(name)
@@ -180,12 +184,19 @@ class _UndefinedNameAttributeFinder(ast.NodeVisitor):
         return names
 
 
+class UndefinedNameAttributeFinder(BaseUndefinedNameFinder):
+    def visit_Attribute(self, node):
+        if isinstance(node.value, ast.Name):
+            self._use_name(node.value.id)
+        getattr(super(), "visit_Attribute", self.generic_visit)(node)
+
+
 class AutoImportTransformer(ASTTransformer):
     def __init__(self, *, verbose=False):
         self._verbose = verbose
 
     def apply(self, mod: ast.Module):
-        undefined_references = _UndefinedNameAttributeFinder().visit(mod)
+        undefined_references = UndefinedNameAttributeFinder().visit(mod)
         names = sorted(
             name for name in undefined_references if not hasattr(builtins, name)
         )
